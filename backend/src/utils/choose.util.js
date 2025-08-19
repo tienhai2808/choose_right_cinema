@@ -12,16 +12,7 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: null,
-    args: [
-      "--disable-setuid-sandbox",
-      "--no-sandbox",
-      "--single-process",
-      "--no-zygote",
-    ],
-    executablePath:
-      process.env.NODE_ENV === "production"
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
+    args: ["--disable-setuid-sandbox", "--no-sandbox"],
   });
   const page = await browser.newPage();
 
