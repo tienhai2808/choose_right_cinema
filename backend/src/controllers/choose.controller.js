@@ -1,31 +1,12 @@
-const redis = require("redis");
-
 const Film = require("../models/film.model");
 const Cinema = require("../models/cinema.model");
 const ShowTime = require("../models/showtime.model");
+const redisClient = require("../config/redis");
 const {
   scrapeShowtimeImages,
   calculateDistances,
   getGeminiRecommendation,
 } = require("../utils/choose.util");
-
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URL,
-});
-
-(async () => {
-  redisClient.on("error", (err) => {
-    console.log("Redis client error", err);
-  });
-
-  redisClient.on("ready", () => {
-    console.log("Redis client started");
-  });
-
-  await redisClient.connect();
-
-  await redisClient.ping();
-})();
 
 module.exports.chooseRightCinema = async (req, res) => {
   try {
