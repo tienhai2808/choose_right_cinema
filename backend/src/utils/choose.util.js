@@ -19,7 +19,10 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
       "--disable-dev-shm-usage",
       "--disable-gpu",
     ],
-    executablePath: puppeteer.executablePath(),
+    executablePath:
+      process.env.NODE_ENV === "production"
+        ? undefined
+        : puppeteer.executablePath(),
   });
   const page = await browser.newPage();
 

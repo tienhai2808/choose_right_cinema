@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const redis = require("redis");
 
 const Cinema = require("./models/cinema.model");
-const { getNextSixDays, extractLatLngFromGoogleMapsUrl } = require("./utils/scrape.util");
+const { extractLatLngFromGoogleMapsUrl } = require("./utils/scrape.util");
 
 dotenv.config();
 
