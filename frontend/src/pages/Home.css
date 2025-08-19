@@ -1,0 +1,695 @@
+/* Base Styles */
+:root {
+  --primary: #e50914;
+  --primary-light: #ff424d;
+  --secondary: #221f1f;
+  --accent: #f5a623;
+  --light: #f5f5f5;
+  --light-gray: #e1e1e1;
+  --dark: #141414;
+  --text: #333;
+  --error: #d93025;
+  --success: #34a853;
+  --transition: all 0.3s ease;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-strong: 0 5px 15px rgba(0, 0, 0, 0.2);
+  --border-radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "IBM Plex Mono", monospace;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: #f8f9fa;
+}
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.hero-section {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)), 
+              url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+  border-radius: var(--border-radius);
+  margin: 20px 0;
+  padding: 60px 20px;
+  text-align: center;
+  color: white;
+  box-shadow: var(--shadow-strong);
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+.search-container {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group label i {
+  color: var(--primary);
+}
+
+.form-group input,
+.form-group select,
+.datepicker {
+  padding: 12px 15px;
+  border: 1px solid var(--light-gray);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.datepicker:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+.form-group input.error,
+.form-group select.error {
+  border-color: var(--error);
+}
+
+.error-message {
+  color: var(--error);
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group.half {
+  flex: 1;
+}
+
+/* Film Search Dropdown */
+.film-search {
+  position: relative;
+}
+
+.film-search input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.search-loading {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary);
+}
+
+.film-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--light-gray);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  box-shadow: var(--shadow);
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.film-dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.film-dropdown-item:hover {
+  background-color: var(--light);
+}
+
+.film-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.film-dropdown-poster {
+  width: 50px;
+  height: 70px;
+  margin-right: 12px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.film-dropdown-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-poster-small {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary);
+  color: white;
+  font-size: 1.2rem;
+}
+
+.film-dropdown-info {
+  flex: 1;
+}
+
+.film-dropdown-info h4 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.film-dropdown-info p {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.no-results-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 8px;
+  color: #666;
+  text-align: center;
+}
+
+.no-results-dropdown i {
+  font-size: 1.5rem;
+}
+
+.no-results-dropdown p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.location-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  background-color: var(--light);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--light-gray);
+}
+
+.location-found {
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.location-not-found {
+  color: var(--error);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.refresh-location {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.refresh-location:hover {
+  background-color: rgba(229, 9, 20, 0.1);
+}
+
+.submit-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: var(--transition);
+  margin-top: 10px;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-light);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 15px;
+  color: var(--primary);
+}
+
+.loading i {
+  font-size: 2rem;
+}
+
+.results-container {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 30px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.results-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.results-header h2 {
+  color: var(--secondary);
+  font-size: 1.5rem;
+}
+
+.results-message {
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  gap: 15px;
+  color: var(--error);
+  text-align: center;
+}
+
+.no-results i {
+  font-size: 3rem;
+}
+
+.cinema-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 20px;
+}
+
+.cinema-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--light-gray);
+  padding: 20px;
+  transition: var(--transition);
+}
+
+.cinema-card:hover {
+  box-shadow: var(--shadow-strong);
+}
+
+.cinema-card h3 {
+  color: var(--primary);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.cinema-details {
+  margin-bottom: 15px;
+}
+
+.cinema-details p {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cinema-details i {
+  color: var(--primary);
+  width: 16px;
+}
+
+.showtime-image {
+  margin: 15px 0;
+}
+
+.showtime-image-container {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+}
+
+.showtime-image h4 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--secondary);
+}
+
+.showtime-image img {
+  width: 100%;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--light-gray);
+  transition: var(--transition);
+}
+
+.zoom-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+  color: white;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.showtime-image-container:hover .zoom-overlay {
+  opacity: 1;
+}
+
+.view-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 10px;
+  transition: var(--transition);
+}
+
+.view-more:hover {
+  color: var(--primary-light);
+}
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 0px;
+  cursor: pointer;
+}
+
+.image-modal-content {
+  background-color: white;
+  width: 100%;
+  max-width: 100vw;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: zoomIn 0.3s ease;
+  cursor: default;
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.image-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--secondary);
+  color: white;
+}
+
+.image-modal-header h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.image-modal-header .close-btn {
+  color: white;
+}
+
+.image-modal-header .close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.close-btn:hover {
+  background-color: var(--light-gray);
+}
+
+.image-modal-body {
+  overflow: auto;
+  max-height: calc(90vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f8f8;
+}
+
+.image-modal-body img {
+  width: 100%;
+}
+
+.image-modal-footer {
+  background-color: #f8f8f8;
+  text-align: center;
+  font-size: 12px;
+  margin-bottom: 2px;
+  padding: 8px;
+  color: #666;
+}
+
+/* Gemini Recommendation Styles */
+.gemini-recommendation {
+  background-color: #f8f9fa;
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--accent);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.gemini-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.gemini-header i {
+  color: var(--accent);
+  font-size: 1.4rem;
+}
+
+.gemini-header h3 {
+  color: var(--dark);
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.gemini-content {
+  color: var(--text);
+  line-height: 1.7;
+  background-color: white;
+  padding: 15px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--light-gray);
+}
+
+.gemini-content p {
+  margin: 0;
+}
+
+.gemini-content ul {
+  padding: 0px 15px;
+}
+
+.cinema-card.recommended {
+  border-left: 4px solid var(--accent);
+  border-color: var(--accent);
+}
+
+.recommended-badge {
+  background-color: var(--accent);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+/* React DatePicker Styles */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--light-gray);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.react-datepicker__day--selected {
+  background-color: var(--primary) !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: var(--primary-light) !important;
+}
+
+/* Location form group specific styles */
+.form-group.location {
+  position: relative;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 40px 15px;
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .cinema-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .film-dropdown {
+    max-height: 250px;
+  }
+  
+  .image-modal-content {
+    margin: 10px;
+    max-width: calc(100vw - 20px);
+  }
+}
