@@ -19,6 +19,7 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
       "--disable-dev-shm-usage",
       "--disable-gpu",
     ],
+    executablePath: puppeteer.executablePath(),
   });
   const page = await browser.newPage();
 
@@ -86,6 +87,8 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
       }
     } catch (err) {
       console.log(`Lỗi khi cào dữ liệu rạp ${cinema.name}: ${err.message}`);
+    } finally {
+      browser.close();
     }
   }
 
