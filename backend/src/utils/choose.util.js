@@ -12,7 +12,7 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: null,
-    args: ["--disable-setuid-sandbox", "--no-sandbox"],
+    args: ["--disable-setuid-sandbox", "--no-sandbox", "--start-maximized"],
   });
   const page = await browser.newPage();
 
@@ -80,8 +80,6 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
       }
     } catch (err) {
       console.log(`Lỗi khi cào dữ liệu rạp ${cinema.name}: ${err.message}`);
-    } finally {
-      browser.close();
     }
   }
 

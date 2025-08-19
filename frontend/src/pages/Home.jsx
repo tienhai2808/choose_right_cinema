@@ -20,7 +20,7 @@ const Home = () => {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedFilmData, setSelectedFilmData] = useState(null);
-  
+
   const searchRef = useRef(null);
   const debounceRef = useRef(null);
 
@@ -165,7 +165,8 @@ const Home = () => {
       <div className="hero-section">
         <div className="hero-content">
           <h1>Tìm Rạp Chiếu Phim</h1>
-          <p>Khám phá các rạp phim gần bạn với bộ phim yêu thích</p>
+          <p>Khám phá các rạp phim gần bạn với bộ phim yêu thích</p>'
+          <button className='hero-button'><a href="https://forms.gle/XH8d548xeeVave2D9" target='_blank' rel="noreferrer">Đóng góp ý kiến <i class="fa-solid fa-hand-holding-heart fa-beat-fade"></i></a></button>
         </div>
       </div>
 
@@ -192,13 +193,13 @@ const Home = () => {
                     <i className="fas fa-spinner fa-spin"></i>
                   </div>
                 )}
-                
+
                 {showDropdown && searchedFilms.length > 0 && (
                   <div className="film-dropdown">
                     {searchedFilms.map((film) => (
-                      <div 
-                        key={film._id} 
-                        className="film-dropdown-item" 
+                      <div
+                        key={film._id}
+                        className="film-dropdown-item"
                         onClick={() => selectFilm(film)}
                       >
                         <div className="film-dropdown-poster">
@@ -218,7 +219,7 @@ const Home = () => {
                     ))}
                   </div>
                 )}
-                
+
                 {showDropdown && searchedFilms.length === 0 && !loadingSearch && filmQuery.length >= 2 && (
                   <div className="film-dropdown">
                     <div className="no-results-dropdown">
