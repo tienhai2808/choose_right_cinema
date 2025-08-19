@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 const axios = require("axios");
-const redisClient = require("../config/redis")
+const redisClient = require("../config/redis");
 const sharp = require("sharp");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const dotenv = require("dotenv");
@@ -12,7 +12,14 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: null,
-    args: ["--start-maximized"],
+    args: [
+      "--start-maximized",
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+    ],
+    executablePath: puppeteer.executablePath(),
   });
   const page = await browser.newPage();
 
