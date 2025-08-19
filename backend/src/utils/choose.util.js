@@ -13,15 +13,14 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
     headless: true,
     defaultViewport: null,
     args: [
-      "--start-maximized",
-      "--no-sandbox",
       "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
     ],
     executablePath:
       process.env.NODE_ENV === "production"
-        ? undefined
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
   });
   const page = await browser.newPage();
