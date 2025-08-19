@@ -1,13 +1,14 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const path = require("path");
 
-const connectDB = require('./config/db');
-const cinemaRoutes = require('./routes/cinema.route');
-const filmRoutes = require('./routes/film.route');
-const chooseRoutes = require('./routes/choose.route');
-const showTimeRoutes = require('./routes/showtime.route');
-const imageRoutes = require('./routes/image.route');
+const connectDB = require("./config/db");
+const cinemaRoutes = require("./routes/cinema.route");
+const filmRoutes = require("./routes/film.route");
+const chooseRoutes = require("./routes/choose.route");
+const showTimeRoutes = require("./routes/showtime.route");
+const imageRoutes = require("./routes/image.route");
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -17,16 +18,28 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}))
+if (process.env.NODE_ENV !== "production") {
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+}
 
 app.use("/api/choose", chooseRoutes);
 app.use("/api/cinemas", cinemaRoutes);
 app.use("/api/films", filmRoutes);
 app.use("/api/showtimes", showTimeRoutes);
 app.use("/api/images", imageRoutes);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../../frontend/build")));
+
+  app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../../frontend", "build", "index.html"));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "fullstack": "file:..",
     "mongoose": "^8.13.2",
     "puppeteer": "^24.6.0",
     "redis": "^4.7.0",

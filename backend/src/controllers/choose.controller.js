@@ -1,4 +1,4 @@
-const redis = require("redis")
+const redis = require("redis");
 
 const Film = require("../models/film.model");
 const Cinema = require("../models/cinema.model");
@@ -108,9 +108,13 @@ module.exports.chooseRightCinema = async (req, res) => {
           distance: travelInfos[index].distance,
           duration: travelInfos[index].duration,
           imgShowTime: redisKey
-            ? `http://localhost:2808/api/images/showtime/${redisKey}`
+            ? `${req.protocol}://${req.get(
+                "host"
+              )}/api/images/showtime/${redisKey}`
             : null,
-            base64Image: base64Image ? `data:image/webp;base64,${base64Image}` : null,
+          base64Image: base64Image
+            ? `data:image/webp;base64,${base64Image}`
+            : null,
         };
       })
     ).then((results) => results.sort((a, b) => a.distance - b.distance));
@@ -121,7 +125,7 @@ module.exports.chooseRightCinema = async (req, res) => {
       viewDate
     );
 
-    const cinemasForResponse = cinemasWithDistance.map(cinema => ({
+    const cinemasForResponse = cinemasWithDistance.map((cinema) => ({
       name: cinema.name,
       slug: cinema.slug,
       address: cinema.address,
