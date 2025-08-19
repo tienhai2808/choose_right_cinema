@@ -22,85 +22,49 @@ const findChrome = () => {
         console.log(`Found Chrome at: ${chromePath}`);
         return chromePath;
       }
-    } catch (error) {}
+    } catch (error) {
+    }
   }
   return null;
 };
 
 const ensureChrome = async () => {
   let chromePath = findChrome();
-
+  
   if (!chromePath) {
-    console.log("Chrome not found, attempting to install...");
+    console.log('Chrome not found, attempting to install...');
     try {
-      execSync("npx puppeteer browsers install chrome", { stdio: "inherit" });
+      execSync('npx puppeteer browsers install chrome', { stdio: 'inherit' });
       chromePath = findChrome();
-
+      
       if (!chromePath) {
-        execSync("npx @puppeteer/browsers install chrome@stable", {
-          stdio: "inherit",
-        });
+        execSync('npx @puppeteer/browsers install chrome@stable', { stdio: 'inherit' });
         chromePath = findChrome();
       }
     } catch (installError) {
       console.log(`Failed to install Chrome: ${installError.message}`);
-      throw new Error("Could not install Chrome");
+      throw new Error('Could not install Chrome');
     }
   }
-
+  
   return chromePath;
 };
 
 module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
-  let browser;
-  try {
-    const chromePath = await ensureChrome();
-    const launchOptions = {
-      headless: true,
-      defaultViewport: null,
-      args: [
-        "--start-maximized",
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--disable-web-security",
-        "--disable-features=VizDisplayCompositor",
-        "--no-first-run",
-        "--no-zygote",
-        "--single-process",
-        "--disable-background-timer-throttling",
-        "--disable-backgrounding-occluded-windows",
-        "--disable-renderer-backgrounding",
-      ],
-    };
-    if (chromePath && chromePath !== puppeteer.executablePath()) {
-      launchOptions.executablePath = chromePath;
-    }
-
-    browser = await puppeteer.launch(launchOptions);
-    console.log("Puppeteer launched successfully");
-  } catch (error) {
-    console.log(`Failed to launch Puppeteer: ${error.message}`);
-    try {
-      browser = await puppeteer.launch({
-        headless: true,
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-          "--single-process",
-        ],
-      });
-      console.log("Fallback to bundled Chromium successful");
-    } catch (fallbackError) {
-      console.log(`Fallback failed: ${fallbackError.message}`);
-      throw new Error("Could not launch browser");
-    }
-  }
-
+  const browser = await puppeteer.launch({
+    headless: true,
+    defaultViewport: null,
+    args: [
+      "--start-maximized",
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
+    ],
+    executablePath: puppeteer.executablePath(),
+  });
   const page = await browser.newPage();
+
   const showtimeImages = {};
 
   const requestId = `showtime-image:${Date.now()}-${Math.random()

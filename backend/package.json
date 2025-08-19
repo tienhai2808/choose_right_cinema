@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "postinstall": "PUPPETEER_CACHE_DIR=./node_modules/.cache/puppeteer npx puppeteer browsers install chrome"
   },
   "keywords": [],
   "author": "",
