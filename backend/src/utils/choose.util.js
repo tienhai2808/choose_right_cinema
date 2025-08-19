@@ -8,48 +8,6 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const findChrome = () => {
-  const possiblePaths = [
-    puppeteer.executablePath(),
-    "/opt/render/.cache/puppeteer/chrome/linux-135.0.7049.42/chrome-linux64/chrome",
-    "/opt/render/.cache/puppeteer/chrome/linux-*/chrome-linux64/chrome",
-    process.env.PUPPETEER_EXECUTABLE_PATH,
-  ].filter(Boolean);
-
-  for (const chromePath of possiblePaths) {
-    try {
-      if (fs.existsSync(chromePath)) {
-        console.log(`Found Chrome at: ${chromePath}`);
-        return chromePath;
-      }
-    } catch (error) {
-    }
-  }
-  return null;
-};
-
-const ensureChrome = async () => {
-  let chromePath = findChrome();
-  
-  if (!chromePath) {
-    console.log('Chrome not found, attempting to install...');
-    try {
-      execSync('npx puppeteer browsers install chrome', { stdio: 'inherit' });
-      chromePath = findChrome();
-      
-      if (!chromePath) {
-        execSync('npx @puppeteer/browsers install chrome@stable', { stdio: 'inherit' });
-        chromePath = findChrome();
-      }
-    } catch (installError) {
-      console.log(`Failed to install Chrome: ${installError.message}`);
-      throw new Error('Could not install Chrome');
-    }
-  }
-  
-  return chromePath;
-};
-
 module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
   const browser = await puppeteer.launch({
     headless: true,
@@ -61,7 +19,6 @@ module.exports.scrapeShowtimeImages = async (cinemas, date, film) => {
       "--disable-dev-shm-usage",
       "--disable-gpu",
     ],
-    executablePath: puppeteer.executablePath(),
   });
   const page = await browser.newPage();
 
