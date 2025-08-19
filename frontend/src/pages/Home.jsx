@@ -165,7 +165,7 @@ const Home = () => {
       <div className="hero-section">
         <div className="hero-content">
           <h1>Tìm Rạp Chiếu Phim</h1>
-          <p>Khám phá các rạp phim gần bạn với bộ phim yêu thích</p>'
+          <p>Khám phá các rạp phim gần bạn với bộ phim yêu thích</p>
           <button className='hero-button'><a href="https://forms.gle/XH8d548xeeVave2D9" target='_blank' rel="noreferrer">Đóng góp ý kiến <i class="fa-solid fa-hand-holding-heart fa-beat-fade"></i></a></button>
         </div>
       </div>
