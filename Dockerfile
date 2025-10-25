@@ -1,3 +1,5 @@
+FROM node:20
+
 USER root
 
 WORKDIR /app
