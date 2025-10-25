@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const showTimeSchema = new mongoose.Schema(
+const showtimeSchema = new mongoose.Schema(
   {
     cinema: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,9 +17,9 @@ const showTimeSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: false }
 );
 
-const ShowTime = mongoose.model("ShowTime", showTimeSchema);
+const Showtime = mongoose.model("Showtime", showtimeSchema);
 
-module.exports = ShowTime;
+module.exports = Showtime;

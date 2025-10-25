@@ -4,11 +4,8 @@ const cors = require("cors");
 const path = require("path");
 
 const connectDB = require("./config/db");
-const cinemaRoutes = require("./routes/cinema.route");
 const filmRoutes = require("./routes/film.route");
 const chooseRoutes = require("./routes/choose.route");
-const showTimeRoutes = require("./routes/showtime.route");
-const imageRoutes = require("./routes/image.route");
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -28,10 +25,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 app.use("/api/choose", chooseRoutes);
-app.use("/api/cinemas", cinemaRoutes);
 app.use("/api/films", filmRoutes);
-app.use("/api/showtimes", showTimeRoutes);
-app.use("/api/images", imageRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../../frontend/build")));

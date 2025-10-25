@@ -1,9 +1,8 @@
 const Film = require("../models/film.model");
 const Cinema = require("../models/cinema.model");
-const ShowTime = require("../models/showtime.model");
-const redisClient = require("../config/redis");
+const Showtime = require("../models/showtime.model");
+const ShowtimeDetails = require("../models/showtimeDetails.model");
 const {
-  scrapeShowtimeImages,
   calculateDistances,
   getGeminiRecommendation,
 } = require("../utils/choose.util");
@@ -26,7 +25,6 @@ module.exports.chooseRightCinema = async (req, res) => {
     const filmQuery = {
       title: { $regex: new RegExp(filmName, "i") },
     };
-
     const film = await Film.findOne(filmQuery).lean();
 
     if (!film) {
@@ -35,7 +33,12 @@ module.exports.chooseRightCinema = async (req, res) => {
         .json({ message: "Không tìm thấy phim khớp với tên" });
     }
 
-    const cinemas = await Cinema.find({
+    const queryDate = new Date(viewDate);
+    queryDate.setHours(0, 0, 0, 0);
+    const nextDay = new Date(queryDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    const cinemasInRadius = await Cinema.find({
       location: {
         $near: {
           $geometry: {
@@ -45,79 +48,101 @@ module.exports.chooseRightCinema = async (req, res) => {
           $maxDistance: radius * 1000,
         },
       },
+    }).lean();
+    if (!cinemasInRadius.length) {
+      return res.status(404).json({
+        message: "Không tìm thấy rạp nào trong bán kính yêu cầu",
+      });
+    }
+
+    const cinemaIds = cinemasInRadius.map((c) => c._id);
+    const showtimes = await Showtime.find({
+      film: film._id,
+      cinema: { $in: cinemaIds },
+      date: {
+        $gte: queryDate,
+        $lt: nextDay,
+      },
+    }).lean();
+
+    if (!showtimes.length) {
+      return res.status(404).json({
+        message: "Không tìm thấy xuất chiếu nào cho phim này vào ngày yêu cầu",
+      });
+    }
+
+    const showtimeIds = showtimes.map((st) => st._id);
+    const allShowtimeDetails = await ShowtimeDetails.find({
+      showtime: { $in: showtimeIds },
     })
-      .limit(limit)
+      .select("showtime time price orderLink")
       .lean();
 
-    if (!cinemas.length) {
-      return res
-        .status(404)
-        .json({ message: "Không tìm thấy rạp nào trong bán kính yêu cầu" });
-    }
-
-    const cinemasWithShowtime = [];
-    for (const cinema of cinemas) {
-      const checkShowTime = await ShowTime.findOne({
-        film: film._id,
-        cinema: cinema._id,
-        date: viewDate,
-      });
-      if (checkShowTime) {
-        cinemasWithShowtime.push(cinema);
+    const showtimeDetailsMap = {};
+    allShowtimeDetails.forEach((detail) => {
+      const key = detail.showtime.toString();
+      if (!showtimeDetailsMap[key]) {
+        showtimeDetailsMap[key] = [];
       }
-    }
+      showtimeDetailsMap[key].push({
+        time: detail.time,
+        price: detail.price || null,
+        orderLink: detail.orderLink || null,
+      });
+    });
 
-    if (!cinemasWithShowtime.length) {
+    const showtimeMap = {};
+    showtimes.forEach((st) => {
+      const cinemaId = st.cinema.toString();
+      const showtimeId = st._id.toString();
+      if (!showtimeMap[cinemaId]) showtimeMap[cinemaId] = [];
+      showtimeMap[cinemaId].push(...(showtimeDetailsMap[showtimeId] || []));
+    });
+
+    const cinemasWithShowtimes = cinemasInRadius
+      .filter(
+        (cinema) =>
+          showtimeMap[cinema._id.toString()] &&
+          showtimeMap[cinema._id.toString()].length > 0
+      )
+      .map((cinema) => ({
+        cinema,
+        showtimeDetails: showtimeMap[cinema._id.toString()],
+      }));
+
+    if (!cinemasWithShowtimes.length) {
       return res.status(404).json({
-        message: "Không tìm thấy rạp nào chiếu phim này vào ngày yêu cầu",
+        message: "Không tìm thấy rạp nào chiếu phim này trong bán kính",
       });
     }
 
-    const [showtimeImages, travelInfos] = await Promise.all([
-      scrapeShowtimeImages(cinemasWithShowtime, viewDate, film),
-      calculateDistances(cinemasWithShowtime, location),
-    ]);
+    const travelInfos = await calculateDistances(
+      cinemasWithShowtimes.map((item) => item.cinema),
+      location
+    );
 
-    const cinemasWithDistance = await Promise.all(
-      cinemasWithShowtime.map(async (cinema, index) => {
-        const redisKey = showtimeImages[cinema.slug];
-        const base64Image = redisKey ? await redisClient.get(redisKey) : null;
-        return {
-          name: cinema.name,
-          slug: cinema.slug,
-          address: cinema.address,
-          distance: travelInfos[index].distance,
-          duration: travelInfos[index].duration,
-          imgShowTime: redisKey
-            ? `${req.protocol}://${req.get(
-                "host"
-              )}/api/images/showtime/${redisKey}`
-            : null,
-          base64Image: base64Image
-            ? `data:image/webp;base64,${base64Image}`
-            : null,
-        };
-      })
-    ).then((results) => results.sort((a, b) => a.distance - b.distance));
+    const cinemasWithDistance = cinemasWithShowtimes
+      .map((item, index) => ({
+        name: item.cinema.name,
+        slug: item.cinema.slug,
+        address: item.cinema.address,
+        distance: travelInfos[index].distance,
+        duration: travelInfos[index].duration,
+        showtimes: item.showtimeDetails,
+      }))
+      .sort((a, b) => a.distance - b.distance);
+
+    const limitedResults = cinemasWithDistance.slice(0, limit || 10);
 
     const geminiResponse = await getGeminiRecommendation(
-      cinemasWithDistance,
+      limitedResults,
       filmName,
       viewDate
     );
 
-    const cinemasForResponse = cinemasWithDistance.map((cinema) => ({
-      name: cinema.name,
-      slug: cinema.slug,
-      address: cinema.address,
-      distance: cinema.distance,
-      duration: cinema.duration,
-      imgShowTime: cinema.imgShowTime,
-    }));
-
     res.status(200).json({
       message: "Các rạp phù hợp với bạn là:",
-      data: cinemasForResponse,
+      data: limitedResults,
       recommendedCinema: geminiResponse,
     });
   } catch (err) {

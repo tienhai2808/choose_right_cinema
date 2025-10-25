@@ -1,4 +1,3 @@
-/* Base Styles */
 :root {
   --primary: #e50914;
   --primary-light: #ff424d;
@@ -148,7 +147,6 @@ body {
   flex: 1;
 }
 
-/* Film Search Dropdown */
 .film-search {
   position: relative;
 }
@@ -333,7 +331,6 @@ body {
   cursor: not-allowed;
 }
 
-/* Loading */
 .loading {
   display: flex;
   flex-direction: column;
@@ -440,48 +437,80 @@ body {
   width: 16px;
 }
 
-.showtime-image {
-  margin: 15px 0;
+.showtimes-container {
+  margin: 20px 0 15px 0;
 }
 
-.showtime-image-container {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  border-radius: var(--border-radius);
-}
-
-.showtime-image h4 {
-  margin-bottom: 10px;
+.showtimes-container h4 {
+  margin-bottom: 12px;
   font-size: 1rem;
+  font-weight: 500;
   color: var(--secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.showtime-image img {
-  width: 100%;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--light-gray);
+.showtimes-container h4 i {
+  color: var(--primary);
+}
+
+.showtimes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.showtime-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: white;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.showtime-pill:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.showtime-time {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.showtime-price {
+  font-size: 0.9rem;
+  font-weight: 500;
+  background-color: var(--accent);
+  color: var(--dark);
+  padding: 2px 6px;
+  border-radius: 4px;
   transition: var(--transition);
 }
 
-.zoom-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 8px 12px;
-  color: white;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.showtime-pill:hover .showtime-price {
+  background-color: white;
+  color: var(--primary);
 }
 
-.showtime-image-container:hover .zoom-overlay {
-  opacity: 1;
+.no-showtimes {
+  font-size: 0.9rem;
+  color: #666;
+  padding: 15px;
+  background-color: var(--light);
+  border-radius: var(--border-radius);
+  text-align: center;
+  border: 1px dashed var(--light-gray);
 }
 
 .view-more {
@@ -491,7 +520,7 @@ body {
   color: var(--primary);
   text-decoration: none;
   font-weight: 500;
-  margin-top: 10px;
+  margin-top: 15px;
   transition: var(--transition);
 }
 
@@ -499,108 +528,6 @@ body {
   color: var(--primary-light);
 }
 
-.image-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1100;
-  padding: 0px;
-  cursor: pointer;
-}
-
-.image-modal-content {
-  background-color: white;
-  width: 100%;
-  max-width: 100vw;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  animation: zoomIn 0.3s ease;
-  cursor: default;
-}
-
-@keyframes zoomIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.image-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background-color: var(--secondary);
-  color: white;
-}
-
-.image-modal-header h3 {
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-.image-modal-header .close-btn {
-  color: white;
-}
-
-.image-modal-header .close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: var(--text);
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: var(--transition);
-}
-
-.close-btn:hover {
-  background-color: var(--light-gray);
-}
-
-.image-modal-body {
-  overflow: auto;
-  max-height: calc(90vh - 100px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f8f8f8;
-}
-
-.image-modal-body img {
-  width: 100%;
-}
-
-.image-modal-footer {
-  background-color: #f8f8f8;
-  text-align: center;
-  font-size: 12px;
-  margin-bottom: 2px;
-  padding: 8px;
-  color: #666;
-}
-
-/* Gemini Recommendation Styles */
 .gemini-recommendation {
   background-color: #f8f9fa;
   border-radius: var(--border-radius);
@@ -672,7 +599,6 @@ body {
   margin-left: 10px;
 }
 
-/* React DatePicker Styles */
 .react-datepicker-wrapper {
   width: 100%;
 }
@@ -694,12 +620,10 @@ body {
   background-color: var(--primary-light) !important;
 }
 
-/* Location form group specific styles */
 .form-group.location {
   position: relative;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
   .hero-section {
     padding: 40px 15px;
@@ -720,10 +644,5 @@ body {
 
   .film-dropdown {
     max-height: 250px;
-  }
-
-  .image-modal-content {
-    margin: 10px;
-    max-width: calc(100vw - 20px);
   }
 }

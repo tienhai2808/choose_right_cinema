@@ -20,7 +20,7 @@ const filmSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: false }
 );
 
 const Film = mongoose.model("Film", filmSchema);

@@ -24,14 +24,14 @@ const cinemaSchema = new mongoose.Schema(
       coordinates: {
         type: [Number],
         required: true,
-      }
+      },
     },
     city: {
       type: String,
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: false }
 );
 
 cinemaSchema.index({ location: "2dsphere" });

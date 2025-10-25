@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Home.css';
 import { useForm } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
@@ -14,7 +14,6 @@ const Home = () => {
   const [viewDate, setViewDate] = useState(new Date());
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState('');
-  const [enlargedImage, setEnlargedImage] = useState(null);
   const [filmQuery, setFilmQuery] = useState('');
   const [searchedFilms, setSearchedFilms] = useState([]);
   const [loadingSearch, setLoadingSearch] = useState(false);
@@ -149,15 +148,11 @@ const Home = () => {
     return maxDate;
   };
 
-  const showEnlargedImage = (imageUrl, cinemaName) => {
-    setEnlargedImage({
-      url: imageUrl,
-      name: cinemaName
-    });
-  };
-
-  const closeEnlargedImage = () => {
-    setEnlargedImage(null);
+  const formatPrice = (price) => {
+    if (price === null || price === undefined) {
+      return 'Giá N/A';
+    }
+    return `${Math.round(price / 1000)}K`;
   };
 
   return (
@@ -346,24 +341,32 @@ const Home = () => {
                       </p>
                     </div>
 
-                    {cinema.imgShowTime && (
-                      <div className="showtime-image">
-                        <h4>Lịch chiếu:</h4>
-                        <div
-                          className="showtime-image-container"
-                          onClick={() => showEnlargedImage(cinema.imgShowTime, cinema.name)}
-                        >
-                          <img src={cinema.imgShowTime} alt="Lịch chiếu" />
-                          <div className="zoom-overlay">
-                            <i className="fas fa-search-plus"></i>
-                            <span> Xem lịch và giá☝️</span>
-                          </div>
+                    <div className="showtimes-container">
+                      <h4>
+                        <i className="fas fa-ticket-alt"></i> Lịch chiếu (Ngày: {viewDate.toLocaleDateString('vi-VN')})
+                      </h4>
+                      {cinema.showtimes && cinema.showtimes.length > 0 ? (
+                        <div className="showtimes-grid">
+                          {cinema.showtimes.map((st, i) => (
+                            <a
+                              key={i}
+                              href={`https://moveek.com${st.orderLink}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="showtime-pill"
+                            >
+                              <span className="showtime-time">{st.time}</span>
+                              <span className="showtime-price">{formatPrice(st.price)}</span>
+                            </a>
+                          ))}
                         </div>
-                      </div>
-                    )}
+                      ) : (
+                        <p className="no-showtimes">Không tìm thấy suất chiếu hợp lệ.</p>
+                      )}
+                    </div>
 
                     <a href={`https://moveek.com/rap/${cinema.slug}/`} target="_blank" rel="noopener noreferrer" className="view-more">
-                      Mua vé ngay <i className="fas fa-external-link-alt"></i>
+                      Xem chi tiết rạp <i className="fas fa-external-link-alt"></i>
                     </a>
                   </div>
                 ))}
@@ -373,24 +376,6 @@ const Home = () => {
         </div>
       )}
 
-      {enlargedImage && (
-        <div className="image-modal" onClick={closeEnlargedImage}>
-          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="image-modal-header">
-              <h3>Lịch chiếu tại {enlargedImage.name}</h3>
-              <button onClick={closeEnlargedImage} className="close-btn">
-                <i className="fas fa-times"></i>
-              </button>
-            </div>
-            <div className="image-modal-body">
-              <img src={enlargedImage.url} alt={`Lịch chiếu tại ${enlargedImage.name}`} />
-            </div>
-            <div className="image-modal-footer">
-              <p>Ấn vào bất kỳ đâu để đóng</p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
