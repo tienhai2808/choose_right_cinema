@@ -152,7 +152,16 @@ const Home = () => {
     if (price === null || price === undefined) {
       return 'Giá N/A';
     }
-    return `${Math.round(price / 1000)}K`;
+
+    if (typeof price === 'string') {
+      return price;
+    }
+
+    if (typeof price === 'number') {
+      return `${Math.round(price / 1000)}K`;
+    }
+
+    return 'Giá N/A';
   };
 
   return (
