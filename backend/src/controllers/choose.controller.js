@@ -72,9 +72,25 @@ module.exports.chooseRightCinema = async (req, res) => {
     }
 
     const showtimeIds = showtimes.map((st) => st._id);
-    const allShowtimeDetails = await ShowtimeDetails.find({
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const isQueryingToday = queryDate.getTime() === today.getTime();
+
+    const detailsQuery = {
       showtime: { $in: showtimeIds },
-    })
+    };
+
+    if (isQueryingToday) {
+      const currentTimeString =
+        ("0" + now.getHours()).slice(-2) +
+        ":" +
+        ("0" + now.getMinutes()).slice(-2);
+      detailsQuery.time = { $gte: currentTimeString };
+    }
+
+    const allShowtimeDetails = await ShowtimeDetails.find(detailsQuery)
       .select("showtime time price orderLink")
       .lean();
 
